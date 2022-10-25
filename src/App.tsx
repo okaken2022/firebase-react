@@ -6,6 +6,7 @@ import AddToPhotosIcon from "@material-ui/icons/AddToPhotos"
 import { EventBusy } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 import TaskItem from './TaskItem';
+import { useNavigate } from "react-router-dom";
 
 import { auth } from "./firebase"
 import ExitToAppIcon from "@material-ui/icons/ExitToApp"
@@ -22,14 +23,15 @@ const useStyles = makeStyles({
   },
 });
 
-const App: React.FC = (props: any) => {
+const App: React.FC = () => {
   const [tasks, setTasks] = useState([{id: "", title: ""}]);
   const [input, setInput] = useState("");
   const classes = useStyles();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unSub = auth.onAuthStateChanged((user)=>{
-      !user && props.history.push("login")
+      !user && navigate("login")
     });
     return ()=> unSub();
   })
@@ -55,7 +57,7 @@ const App: React.FC = (props: any) => {
       onClick={
         async () => {
           try {await auth.signOut();
-          props.history.push("login");
+          navigate("login");
         } catch(error: any) {
           alert(error.message)
         }

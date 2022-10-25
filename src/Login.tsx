@@ -2,18 +2,20 @@ import React, { useState, useEffect } from 'react'
 import styles from "./Login.module.css";
 import {Button, FormControl, TextField, Typography} from "@material-ui/core";
 import { auth } from "./firebase";
+import { useNavigate } from "react-router-dom";
 
-const Login: React.FC = (props: any) => {
+const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const unSub = auth.onAuthStateChanged((user)=> {
-      user && props.history.push("/")
+      user && navigate("/")
     });
     return () => unSub();
-  }, [props.history]);
+  }, [navigate]);
   return (
     <div className={styles.login__root}>
       <h1>{isLogin ? "Login" : "Register"}</h1>
@@ -56,7 +58,7 @@ const Login: React.FC = (props: any) => {
           ? async () => {
               try {
                 await auth.signInWithEmailAndPassword(email, password);
-                props.history.push("/")
+                navigate("/")
               } catch (error:any) {
                 alert(error.message)
               }
@@ -64,7 +66,7 @@ const Login: React.FC = (props: any) => {
           : async () => {
               try {
                 await auth.createUserWithEmailAndPassword(email, password);
-                props.history.push("/")
+                navigate("/")
               } catch (error:any) {
                 alert(error.message)
               }
